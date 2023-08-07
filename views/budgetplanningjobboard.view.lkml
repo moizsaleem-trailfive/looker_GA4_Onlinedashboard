@@ -1,5 +1,5 @@
-view: budgetplanningjobboard {
-  sql_table_name: `evident-catcher-381918.sql_server_live_dbo.budgetplanningjobboard` ;;
+view: budget_planning_jobboard {
+  sql_table_name: `evident-catcher-381918.sql_server_live_dbo.BudgetPlanningJobboard` ;;
   drill_fields: [id]
 
   dimension: id {
@@ -19,12 +19,12 @@ view: budgetplanningjobboard {
   dimension: budgetplanningid {
     type: number
     value_format_name: id
-    # hidden: yes
     sql: ${TABLE}.budgetplanningid ;;
   }
   dimension: clientid {
     type: number
     value_format_name: id
+    # hidden: yes
     sql: ${TABLE}.clientid ;;
   }
   dimension: createdby {
@@ -34,11 +34,10 @@ view: budgetplanningjobboard {
   dimension_group: createddate {
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
-    datatype: datetime
     sql: ${TABLE}.createddate ;;
   }
   dimension: fc {
-    type: string
+    type: number
     sql: ${TABLE}.fc ;;
   }
   dimension: jobboardid {
@@ -51,7 +50,7 @@ view: budgetplanningjobboard {
     sql: ${TABLE}.pl ;;
   }
   dimension: sp {
-    type: string
+    type: number
     sql: ${TABLE}.sp ;;
   }
   dimension: updatedby {
@@ -61,11 +60,10 @@ view: budgetplanningjobboard {
   dimension_group: updateddate {
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
-    datatype: datetime
     sql: ${TABLE}.updateddate ;;
   }
   measure: count {
     type: count
-    drill_fields: [id, budgetplanning.id]
+    drill_fields: [id, client.name, client.id]
   }
 }

@@ -28,6 +28,7 @@ view: campaign {
   dimension: clientid {
     type: number
     value_format_name: id
+    # hidden: yes
     sql: ${TABLE}.clientid ;;
   }
   dimension: createdby {
@@ -37,15 +38,17 @@ view: campaign {
   dimension_group: createddate {
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
-    datatype: datetime
     sql: ${TABLE}.createddate ;;
   }
   dimension: date {
     type: string
     sql: ${TABLE}.date ;;
   }
-  dimension: enddate {
-    type: string
+  dimension_group: enddate {
+    type: time
+    timeframes: [raw, date, week, month, quarter, year]
+    convert_tz: no
+    datatype: date
     sql: ${TABLE}.enddate ;;
   }
   dimension: lmh {
@@ -80,11 +83,24 @@ view: campaign {
   dimension_group: updateddate {
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
-    datatype: datetime
     sql: ${TABLE}.updateddate ;;
   }
   measure: count {
     type: count
-    drill_fields: [id, name, campaignjobboards.count]
+    drill_fields: [detail*]
   }
+
+
+  # ----- Sets of fields for drilling ------
+  set: detail {
+    fields: [
+      id,
+      name,
+      client.name,
+      client.id,
+      campaign_job_board.count,
+      vacancy.count
+    ]
+  }
+
 }

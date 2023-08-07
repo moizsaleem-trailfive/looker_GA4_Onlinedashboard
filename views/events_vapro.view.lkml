@@ -1,24 +1,24 @@
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
-explore: events_20230803 {
-  hidden: yes
-    join: events_20230803__items {
-      view_label: "Events 20230803: Items"
-      sql: LEFT JOIN UNNEST(${events_20230803.items}) as events_20230803__items ;;
-      relationship: one_to_many
-    }
-    join: events_20230803__event_params {
-      view_label: "Events 20230803: Event Params"
-      sql: LEFT JOIN UNNEST(${events_20230803.event_params}) as events_20230803__event_params ;;
-      relationship: one_to_many
-    }
-    join: events_20230803__user_properties {
-      view_label: "Events 20230803: User Properties"
-      sql: LEFT JOIN UNNEST(${events_20230803.user_properties}) as events_20230803__user_properties ;;
-      relationship: one_to_many
-    }
-}
-view: events_20230803 {
-  sql_table_name: `evident-catcher-381918.analytics_278355110.events_20230803` ;;
+# explore: events_20230803 {
+#   hidden: yes
+#     join: events_20230803__items {
+#       view_label: "Events 20230803: Items"
+#       sql: LEFT JOIN UNNEST(${events_20230803.items}) as events_20230803__items ;;
+#       relationship: one_to_many
+#     }
+#     join: events_20230803__event_params {
+#       view_label: "Events 20230803: Event Params"
+#       sql: LEFT JOIN UNNEST(${events_20230803.event_params}) as events_20230803__event_params ;;
+#       relationship: one_to_many
+#     }
+#     join: events_20230803__user_properties {
+#       view_label: "Events 20230803: User Properties"
+#       sql: LEFT JOIN UNNEST(${events_20230803.user_properties}) as events_20230803__user_properties ;;
+#       relationship: one_to_many
+#     }
+# }
+view: events_vapro {
+  sql_table_name: `evident-catcher-381918.analytics_278355110.events_*` ;;
 
   dimension: app_info__firebase_app_id {
     type: string
@@ -121,6 +121,23 @@ view: events_20230803 {
     sql: ${TABLE}.device.browser_version ;;
     group_label: "Device"
     group_item_label: "Browser Version"
+  }
+  dimension: Page_location{
+    label: "Page Location"
+    type: string
+    sql: (SELECT value.string_value
+             FROM UNNEST(${event_params})
+             WHERE key = 'page_location');;
+  }
+  dimension: UTM {
+    label: "UTM"
+    type: string
+    sql:REGEXP_EXTRACT(${Page_location}, 'utm_id=([^&]+)') ;;
+  }
+  dimension: utm_id {
+    type: number # Assuming utm_id is an integer
+    sql: CAST(${UTM} as INTEGER);;
+    primary_key: yes
   }
   dimension: device__category {
     type: string
@@ -280,6 +297,20 @@ view: events_20230803 {
     type: string
     sql: ${TABLE}.event_date ;;
   }
+  dimension_group: date {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: PARSE_DATE("%Y%m%d", ${TABLE}.event_date);;
+  }
   dimension: event_dimensions__hostname {
     type: string
     sql: ${TABLE}.event_dimensions.hostname ;;
@@ -434,15 +465,15 @@ view: events_20230803 {
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-	event_name,
-	traffic_source__name,
-	device__mobile_model_name,
-	device__mobile_brand_name,
-	device__web_info__hostname,
-	event_dimensions__hostname,
-	device__mobile_marketing_name,
-	collected_traffic_source__manual_campaign_name
-	]
+      event_name,
+      traffic_source__name,
+      device__mobile_model_name,
+      device__mobile_brand_name,
+      device__web_info__hostname,
+      event_dimensions__hostname,
+      device__mobile_marketing_name,
+      collected_traffic_source__manual_campaign_name
+    ]
   }
 
 }

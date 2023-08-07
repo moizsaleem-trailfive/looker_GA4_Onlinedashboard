@@ -1,5 +1,5 @@
-view: budgetplanning {
-  sql_table_name: `evident-catcher-381918.sql_server_live_dbo.budgetplanning` ;;
+view: budget_planning {
+  sql_table_name: `evident-catcher-381918.sql_server_live_dbo.BudgetPlanning` ;;
   drill_fields: [id]
 
   dimension: id {
@@ -17,20 +17,21 @@ view: budgetplanning {
     sql: ${TABLE}._fivetran_synced ;;
   }
   dimension: actionbudget {
-    type: string
+    type: number
     sql: ${TABLE}.actionbudget ;;
   }
   dimension: boardsbudget {
-    type: string
+    type: number
     sql: ${TABLE}.boardsbudget ;;
   }
   dimension: budgetagreement {
-    type: string
+    type: number
     sql: ${TABLE}.budgetagreement ;;
   }
   dimension: clientid {
     type: number
     value_format_name: id
+    # hidden: yes
     sql: ${TABLE}.clientid ;;
   }
   dimension: createdby {
@@ -40,31 +41,30 @@ view: budgetplanning {
   dimension_group: createddate {
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
-    datatype: datetime
     sql: ${TABLE}.createddate ;;
   }
   dimension: date {
-    type: number
+    type: string
     sql: ${TABLE}.date ;;
   }
   dimension: facebookbudget {
-    type: string
+    type: number
     sql: ${TABLE}.facebookbudget ;;
   }
   dimension: fc {
-    type: string
+    type: number
     sql: ${TABLE}.fc ;;
   }
   dimension: googlebudget {
-    type: string
+    type: number
     sql: ${TABLE}.googlebudget ;;
   }
   dimension: indeedbudget {
-    type: string
+    type: number
     sql: ${TABLE}.indeedbudget ;;
   }
   dimension: linkedinbudget {
-    type: string
+    type: number
     sql: ${TABLE}.linkedinbudget ;;
   }
   dimension: month {
@@ -72,11 +72,11 @@ view: budgetplanning {
     sql: ${TABLE}.month ;;
   }
   dimension: pl {
-    type: string
+    type: number
     sql: ${TABLE}.pl ;;
   }
   dimension: plthismonth {
-    type: string
+    type: number
     sql: ${TABLE}.plthismonth ;;
   }
   dimension: rest {
@@ -84,7 +84,7 @@ view: budgetplanning {
     sql: ${TABLE}.rest ;;
   }
   dimension: restbudget {
-    type: string
+    type: number
     sql: ${TABLE}.restbudget ;;
   }
   dimension: sp {
@@ -98,7 +98,6 @@ view: budgetplanning {
   dimension_group: updateddate {
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
-    datatype: datetime
     sql: ${TABLE}.updateddate ;;
   }
   dimension: year {
@@ -107,6 +106,6 @@ view: budgetplanning {
   }
   measure: count {
     type: count
-    drill_fields: [id, budgetplanningjobboard.count]
+    drill_fields: [id, client.name, client.id]
   }
 }

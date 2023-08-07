@@ -1,5 +1,5 @@
-view: campaignjobboards {
-  sql_table_name: `evident-catcher-381918.sql_server_live_dbo.campaignjobboards` ;;
+view: campaign_job_board {
+  sql_table_name: `evident-catcher-381918.sql_server_live_dbo.CampaignJobBoard` ;;
   drill_fields: [id]
 
   dimension: id {
@@ -29,7 +29,6 @@ view: campaignjobboards {
   dimension_group: createddate {
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
-    datatype: datetime
     sql: ${TABLE}.createddate ;;
   }
   dimension: jobboardid {
@@ -44,7 +43,6 @@ view: campaignjobboards {
   dimension_group: updateddate {
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
-    datatype: datetime
     sql: ${TABLE}.updateddate ;;
   }
   measure: count {
